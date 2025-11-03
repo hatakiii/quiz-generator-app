@@ -1,13 +1,15 @@
 import React from "react";
+import { LuSparkles } from "react-icons/lu";
+import { MdOutlineArticle } from "react-icons/md";
+import { Button } from "@/components/ui/button";
 
 export const ArticleQuizGenerator = () => {
   return (
     <div className="self-stretch p-7 bg-white rounded-lg outline  outline-border-border-border inline-flex flex-col justify-end items-end gap-5 overflow-hidden">
       <div className="self-stretch flex flex-col justify-start items-start gap-2">
         <div className="self-stretch inline-flex justify-start items-start gap-2">
-          <div className="w-8 h-8 relative overflow-hidden">
-            <div className="w-6 h-6   absolute outline   outline-border-border-foreground" />
-          </div>
+          <LuSparkles className="w-8 h-8 " />
+
           <div className="justify-start text-black text-2xl font-semibold  leading-8">
             Article Quiz Generator
           </div>
@@ -19,35 +21,32 @@ export const ArticleQuizGenerator = () => {
       </div>
       <div className="self-stretch flex flex-col justify-start items-start gap-1">
         <div className="inline-flex justify-start items-center gap-1">
-          <div className="w-3.5 h-3.5 relative" />
+          <MdOutlineArticle className="w-4 h-4" />
           <div className="justify-start text-text-text-muted-foreground text-sm font-semibold leading-5">
             Article Title
           </div>
         </div>
-        <div className="self-stretch h-10 px-3 py-2 bg-background-bg-background rounded-md  outline-border-border-input inline-flex justify-start items-start overflow-hidden">
-          <div className="w-56 justify-start text-text-text-muted-foreground text-sm font-normal  leading-5">
-            Enter a title for your article...
-          </div>
-        </div>
+        <input
+          className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm w-full"
+          id="title"
+          placeholder="Enter a title for your article..."
+        />
       </div>
       <div className="self-stretch flex flex-col justify-start items-start gap-1">
         <div className="inline-flex justify-start items-center gap-1">
-          <div className="w-3.5 h-3.5 relative" />
+          <MdOutlineArticle className="w-4 h-4" />
           <div className="justify-start text-text-text-muted-foreground text-sm font-semibold  leading-5">
             Article Content
           </div>
         </div>
-        <div className="self-stretch h-28 px-3 py-2 bg-background-bg-background rounded-md  outline-border-border-input inline-flex justify-start items-start overflow-hidden">
-          <div className="w-56 justify-start text-text-text-muted-foreground text-sm font-normal  leading-5">
-            Paste your article content here...
-          </div>
-        </div>
+        <textarea
+          className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm min-h-[200px]"
+          id="content"
+          placeholder="Paste your article content here..."
+        />
       </div>
-      <div className="h-10 px-4 py-2 opacity-20 bg-background-bg-primary rounded-md inline-flex justify-center items-center gap-2">
-        <div className="justify-start text-text-text-primary-foreground text-sm font-medium  leading-5">
-          Generate summary
-        </div>
-      </div>
+
+      <Button variant="outline">Generate summary</Button>
     </div>
   );
 };
