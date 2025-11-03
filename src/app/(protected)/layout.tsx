@@ -29,13 +29,11 @@ export default function RootLayout({
     <>
       <Header />
       <SidebarProvider>
-        <div className="flex mt-14">
-          <AppSidebar />
-          <main className="flex-1 p-4">
-            <SidebarTrigger />
-            {children}
-          </main>
-        </div>
+        <AppSidebar />
+        <main className="w-screen pt-14 flex">
+          <SidebarTrigger className="h-screen items-start border-r border-input rounded-none py-7 px-9 fixed" />
+          {children}
+        </main>
       </SidebarProvider>
     </>
   );

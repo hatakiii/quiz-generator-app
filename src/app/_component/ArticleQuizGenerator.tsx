@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 export const ArticleQuizGenerator = () => {
   return (
-    <div className="self-stretch p-7 bg-white rounded-lg outline  outline-border-border-border inline-flex flex-col justify-end items-end gap-5 overflow-hidden">
+    <div className="h-131 p-7 bg-white rounded-lg outline  outline-border-border-border inline-flex flex-col justify-end items-end gap-5 overflow-hidden">
       <div className="self-stretch flex flex-col justify-start items-start gap-2">
         <div className="self-stretch inline-flex justify-start items-start gap-2">
           <LuSparkles className="w-8 h-8 " />

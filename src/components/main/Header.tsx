@@ -3,9 +3,8 @@ import Image from "next/image";
 
 export const Header = () => {
   return (
-    <header className="w-screen h-14 fixed flex z-50 p-4 justify-between items-center bg-amber-800">
-      <p>Quiz app</p>
-      <Image src={"/file.svg"} alt="" width={12} height={12} />
+    <header className="w-screen fixed z-50 px-6 py-2.5 bg-background text-2xl leading-9 font-semibold border border-input">
+      Quiz app
     </header>
   );
 };
