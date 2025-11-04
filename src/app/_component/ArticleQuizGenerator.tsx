@@ -1,11 +1,12 @@
 import React from "react";
 import { LuSparkles } from "react-icons/lu";
-import { MdOutlineArticle } from "react-icons/md";
+
+import { FiFileText } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 
 export const ArticleQuizGenerator = () => {
   return (
-    <div className="h-131 p-7 bg-white rounded-lg outline  outline-border-border-border inline-flex flex-col justify-end items-end gap-5 overflow-hidden">
+    <div className="mt-12 h-131 p-7 bg-white rounded-lg outline  outline-border-border-border inline-flex flex-col justify-end items-end gap-5 overflow-hidden">
       <div className="self-stretch flex flex-col justify-start items-start gap-2">
         <div className="self-stretch inline-flex justify-start items-start gap-2">
           <LuSparkles className="w-8 h-8 " />
@@ -21,7 +22,7 @@ export const ArticleQuizGenerator = () => {
       </div>
       <div className="self-stretch flex flex-col justify-start items-start gap-1">
         <div className="inline-flex justify-start items-center gap-1">
-          <MdOutlineArticle className="w-4 h-4" />
+          <FiFileText className="w-4 h-4" />
           <div className="justify-start text-text-text-muted-foreground text-sm font-semibold leading-5">
             Article Title
           </div>
@@ -34,7 +35,7 @@ export const ArticleQuizGenerator = () => {
       </div>
       <div className="self-stretch flex flex-col justify-start items-start gap-1">
         <div className="inline-flex justify-start items-center gap-1">
-          <MdOutlineArticle className="w-4 h-4" />
+          <FiFileText className="w-4 h-4" />
           <div className="justify-start text-text-text-muted-foreground text-sm font-semibold  leading-5">
             Article Content
           </div>

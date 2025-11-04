@@ -31,7 +31,8 @@ export default function RootLayout({
       <SidebarProvider>
         <AppSidebar />
         <main className="w-screen pt-14 flex">
-          <SidebarTrigger className="h-screen items-start border-r border-input rounded-none py-7 px-9 fixed" />
+          <SidebarTrigger className="h-screen items-start border-r border-input rounded-none py-7 px-9" />
+
           {children}
         </main>
       </SidebarProvider>
