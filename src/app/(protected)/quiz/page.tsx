@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { IoCloseOutline } from "react-icons/io5";
+import { LuSparkles } from "react-icons/lu";
 
 const QuizPage = () => {
   return (
@@ -9,7 +10,7 @@ const QuizPage = () => {
         <div className="flex justify-between">
           <div className="flex flex-col gap-2">
             <div className="flex gap-2">
-              <img src="/article-icon.svg" />
+              <LuSparkles />
               <div>Quick test</div>
             </div>
             <div>Take a quick test about your knowledge from your content </div>
@@ -26,8 +27,8 @@ const QuizPage = () => {
               <div>{"1"}/5</div>
             </div>
             <div className="flex flex-wrap">
-              {["Yesugei", "Temüjin", "Jamukha", "Toghrul"].map((el) => (
-                <Button variant={"outline"} className="w-1/2 h-10">
+              {["Yesugei", "Temüjin", "Jamukha", "Toghrul"].map((el, i) => (
+                <Button variant={"outline"} key={i} className="w-1/2 h-10">
                   {el}
                 </Button>
               ))}

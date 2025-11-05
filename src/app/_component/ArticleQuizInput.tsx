@@ -3,11 +3,12 @@ import { LuSparkles } from "react-icons/lu";
 
 import { FiFileText } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
-export const ArticleQuizGenerator = () => {
+export const ArticleQuizInput = () => {
   return (
-    <div className="mt-12 h-131 p-7 bg-white rounded-lg outline  outline-border-border-border inline-flex flex-col justify-end items-end gap-5 overflow-hidden">
-      <div className="self-stretch flex flex-col justify-start items-start gap-2">
+    <Card className="mt-12 h-fit p-7 bg-white rounded-lg outline  outline-border-border-border flex flex-col  gap-5 ">
+      <div className=" flex flex-col justify-start items-start gap-2">
         <div className="self-stretch inline-flex justify-start items-start gap-2">
           <LuSparkles className="w-8 h-8 " />
 
@@ -48,6 +49,6 @@ export const ArticleQuizGenerator = () => {
       </div>
 
       <Button variant="outline">Generate summary</Button>
-    </div>
+    </Card>
   );
 };

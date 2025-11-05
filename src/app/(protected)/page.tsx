@@ -1,5 +1,12 @@
-import Image from "next/image";
+import React from "react";
+import { ArticleQuizInput } from "@/app/_component/ArticleQuizInput";
 
-export default function Home() {
-  return <div>Hi1234</div>;
-}
+const page = () => {
+  return (
+    <div className="w-full h-full  flex  justify-center items-start ">
+      <ArticleQuizInput />
+    </div>
+  );
+};
+
+export default page;

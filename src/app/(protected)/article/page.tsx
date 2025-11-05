@@ -5,23 +5,20 @@ import { Label } from "@/components/ui/label";
 import { PiBookOpen } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import Markdown from "react-markdown";
+import { LuSparkles } from "react-icons/lu";
 
 const ArticlePage = () => {
   const [summarizedContent, setSummarizedContent] = useState<string>("");
   const router = useRouter();
   const [article, setArticle] = useState<string>("");
-  const [quizzes, setQuizzes] = useState<string>(""); // tur orulsan uur page der gargah
-
-  //article get huselt hiij db der hadgalsan article avah
-  //generated summary get huselt hij db der hadgalsan summary avah
+  const [quizzes, setQuizzes] = useState<string>("");
 
   const generateQuiz = async () => {
-    setQuizzes(""); // tur zuur bichsen
-
+    setQuizzes("");
     const response = await fetch("/api/quizzes-mock", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ article }), // tur zuur input nemeed input -ees article avaad quiz usgej uzvel
+      body: JSON.stringify({ article }),
     });
 
     const result = await response.json();
@@ -39,7 +36,8 @@ const ArticlePage = () => {
       <div className="bg-background max-w-214 flex flex-col p-7 mt-12 mx-64 rounded-lg h-fit gap-5 text-muted-foreground border border-border">
         <div className="flex flex-col gap-5">
           <div className="flex gap-2 items-center text-2xl leading-8 font-semibold text-foreground">
-            <img src="/article-icon.svg" alt="" className="w-6 h-6" />
+            <LuSparkles />
+
             <div>Article Quiz Generator</div>
           </div>
           <div className="flex flex-col gap-2 text-sm leading-5">
