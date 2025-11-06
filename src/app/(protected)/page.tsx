@@ -1,13 +1,16 @@
 import React from "react";
-import { ArticleQuizInput } from "@/app/_component/ArticleQuizInput";
+import { ArticleInput } from "../_component/ArticleInput";
 import { SummarizedContent } from "../_component/SummarizedContent";
+import { ArticleProvider } from "../_providers/ArticleProvider";
 
 const page = () => {
   return (
-    <div className="w-full h-full  flex  justify-center items-start ">
-      {/* <ArticleQuizInput /> */}
-      <SummarizedContent />
-    </div>
+    <ArticleProvider>
+      <div className="w-full h-full  flex justify-center items-start ">
+        <ArticleInput />
+        <SummarizedContent />
+      </div>
+    </ArticleProvider>
   );
 };
 

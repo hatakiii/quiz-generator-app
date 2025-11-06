@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { LuSparkles } from "react-icons/lu";
 
@@ -5,7 +6,12 @@ import { FiFileText } from "react-icons/fi";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-export const ArticleQuizInput = () => {
+import { useArticle } from "../_providers/ArticleProvider";
+
+export const ArticleInput = () => {
+  const { article, loading, setTitle, setContent, generateSummary } =
+    useArticle();
+
   return (
     <Card className="mt-12 h-fit p-7 bg-white rounded-lg outline  outline-border-border-border flex flex-col  gap-5 ">
       <div className=" flex flex-col justify-start items-start gap-2">
@@ -32,6 +38,8 @@ export const ArticleQuizInput = () => {
           className="flex h-9 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm w-full"
           id="title"
           placeholder="Enter a title for your article..."
+          value={article.title}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </div>
       <div className="self-stretch flex flex-col justify-start items-start gap-1">
@@ -45,10 +53,14 @@ export const ArticleQuizInput = () => {
           className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-base shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm min-h-[200px]"
           id="content"
           placeholder="Paste your article content here..."
+          value={article.content}
+          onChange={(e) => setContent(e.target.value)}
         />
       </div>
 
-      <Button variant="outline">Generate summary</Button>
+      <Button variant="outline" onClick={generateSummary} disabled={loading}>
+        {loading ? "Generating..." : "Generate Summary"}
+      </Button>
     </Card>
   );
 };
