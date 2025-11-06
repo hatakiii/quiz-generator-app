@@ -9,7 +9,7 @@ import { useArticle } from "../_providers/ArticleProvider";
 export const SummarizedContent = () => {
   const { article } = useArticle();
 
-  // if (!article.summary) return null;
+  if (!article.summary) return null;
   return (
     <Card className="mt-12 h-fit p-7 bg-white rounded-lg outline  outline-border-border-border flex flex-col  gap-5 ">
       <div className=" flex flex-col justify-start items-start gap-2">
