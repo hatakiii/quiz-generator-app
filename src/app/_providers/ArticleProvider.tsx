@@ -44,6 +44,7 @@ export const ArticleProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data } = await axios.post("/api/articles", {
         contentPrompt: article.content,
+        titlePrompt: article.title,
       });
       setArticle((prev) => ({ ...prev, summary: data.text }));
     } catch (err) {

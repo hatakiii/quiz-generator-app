@@ -5,9 +5,15 @@ import React from "react";
 import { FiFileText } from "react-icons/fi";
 import { LuSparkles } from "react-icons/lu";
 import { useArticle } from "../_providers/ArticleProvider";
+import { useRouter } from "next/navigation";
 
 export const SummarizedContent = () => {
   const { article } = useArticle();
+  const router = useRouter();
+
+  const handleTakeQuiz = () => {
+    router.push("/quiz");
+  };
 
   if (!article.summary) return null;
   return (
@@ -41,7 +47,9 @@ export const SummarizedContent = () => {
       </div>
       <div className="flex justify-between">
         <Button variant="outline">See content</Button>
-        <Button variant="destructive">Take a quiz</Button>
+        <Button variant="destructive" onClick={handleTakeQuiz}>
+          Take a quiz
+        </Button>
       </div>
     </Card>
   );

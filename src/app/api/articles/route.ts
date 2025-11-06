@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const POST = async (req: NextRequest) => {
-  const { contentPrompt } = await req.json();
+  const { contentPrompt, titlePrompt } = await req.json();
 
   if (!contentPrompt) {
     return NextResponse.json(
@@ -27,6 +27,11 @@ export const POST = async (req: NextRequest) => {
 
   // await query(`INSERT INTO articles (title, content, summery, userId) VALUES (
   // ${title}, ${contentPrompt}, ${text} , 1)`)
+
+  // await query(
+  //   `INSERT INTO articles (title, content, summary) VALUES ($1, $2, $3)`,
+  //   [titlePrompt, contentPrompt, text]
+  // );
 
   return NextResponse.json({ text });
 };
