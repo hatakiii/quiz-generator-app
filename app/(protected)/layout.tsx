@@ -1,26 +1,35 @@
-"use client";
+import { Geist, Geist_Mono } from "next/font/google";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import HomeSideBar from "../_components/home/HomeSideBar";
-import { useState } from "react";
+import { AppSidebar } from "@/components/main/AppSidebar";
+import { Header } from "@/components/main/Header";
+
 import { QuizProvider } from "../_providers/QuizProvider";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = useState<boolean>(false);
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <SidebarProvider className="bg-white" open={open} onOpenChange={setOpen}>
-      <HomeSideBar open={open} />
-      <main>
-        <div>
-          {!open ? (
-            <div className="pt-18 px-4 h-screen border border-[#E4E4E7]">
-              <SidebarTrigger className="w-6 h-6" />
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
-      </main>
-      <QuizProvider>{children}</QuizProvider>
-    </SidebarProvider>
+    <>
+      <Header />
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="w-screen pt-14 flex">
+          <SidebarTrigger className="h-screen items-start border-r border-input rounded-none py-7 px-9" />
+          <QuizProvider>{children}</QuizProvider>
+        </main>
+      </SidebarProvider>
+    </>
   );
 }
