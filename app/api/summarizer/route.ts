@@ -29,9 +29,9 @@ export const POST = async (req: NextRequest) => {
   });
   const text = replaceApostrophes(response.text || "");
 
-  // console.log("Title", titlePrompt);
-  // console.log("content", transformedContentPrompt);
-  // console.log("text", text);
+  console.log("Title", titlePrompt);
+  console.log("content", transformedContentPrompt);
+  console.log("text", text);
 
   try {
     const articleContent = await query(
