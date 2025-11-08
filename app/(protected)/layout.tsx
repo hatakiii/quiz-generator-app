@@ -1,35 +1,42 @@
-import { Geist, Geist_Mono } from "next/font/google";
+"use client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/main/AppSidebar";
-import { Header } from "@/components/main/Header";
+import HomeSideBar from "@/app/_components/home/HomeSideBar";
+import { useState } from "react";
+import { QuizProvider } from "@/app/_providers/QuizProvider";
+import { ArticleType } from "@/lib/types";
+import axios from "axios";
 
-import { QuizProvider } from "../_providers/QuizProvider";
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [articles, setArticles] = useState<ArticleType[]>([]);
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  const getArticles = async () => {
+    setLoading(true);
+    const result = await axios.get("/api/summarizer");
+    const data = await result.data;
+    console.log(data, "data");
+    setArticles(data);
+    setLoading(false);
+  };
   return (
-    <>
-      <Header />
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="w-screen pt-14 flex">
-          <SidebarTrigger className="h-screen items-start border-r border-input rounded-none py-7 px-9" />
-          <QuizProvider>{children}</QuizProvider>
-        </main>
-      </SidebarProvider>
-    </>
+    <SidebarProvider className="bg-white" open={open} onOpenChange={setOpen}>
+      <HomeSideBar open={open} />
+      <main>
+        <div>
+          {!open ? (
+            <div
+              className="pt-18 px-4 h-screen border border-[#E4E4E7]"
+              onClick={getArticles}
+            >
+              <SidebarTrigger className="w-6 h-6" />
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
+      </main>
+      <QuizProvider>{children}</QuizProvider>
+    </SidebarProvider>
   );
 }

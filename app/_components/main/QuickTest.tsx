@@ -2,105 +2,179 @@
 
 import { useData } from "@/app/_providers/QuizProvider";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Sparkles } from "lucide-react";
 import { useState } from "react";
-import { Sparkles, X } from "lucide-react";
+import QuizExitBtn from "./QuizExitBtn";
 
-export default function QuickTest() {
+const QuickTest = () => {
   const { quiz } = useData();
-  const [index, setIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [selected, setSelected] = useState<string | null>(null);
-  const [finished, setFinished] = useState(false);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
+  const [showResults, setShowResults] = useState(false);
 
-  if (!quiz?.length) {
+  const currentQuestion = quiz[currentQuestionIndex];
+  const totalQuestions = quiz.length;
+
+  if (!quiz || quiz.length === 0) {
     return (
-      <p className="text-center mt-10">
-        No quiz found. Please generate one first.
-      </p>
+      <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+        No quiz questions available yet.
+      </div>
     );
   }
 
-  const q = quiz[index];
-  const correct = q.correctAnswer || q.answer;
+  // ✅ Handle user selecting an option
+  const handleAnswerSelect = (index: number) => {
+    const newAnswers = [...selectedAnswers];
+    newAnswers[currentQuestionIndex] = index;
+    setSelectedAnswers(newAnswers);
 
-  const handleAnswer = (option: string) => {
-    if (selected) return; // already answered
-    setSelected(option);
-    if (
-      String(option).trim().toLowerCase() ===
-      String(correct).trim().toLowerCase()
-    ) {
-      setScore((s) => s + 1);
-    }
+    // Auto move to next question after 1s delay
     setTimeout(() => {
-      if (index < quiz.length - 1) {
-        setIndex((i) => i + 1);
-        setSelected(null);
+      if (currentQuestionIndex < totalQuestions - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
-        setFinished(true);
+        setShowResults(true);
       }
-    }, 1000);
+    }, 700);
   };
 
-  if (finished) {
+  // ✅ Calculate results
+  const correctCount = quiz.reduce((count, q, i) => {
+    if (selectedAnswers[i] === Number(q.answer)) count++;
+    return count;
+  }, 0);
+
+  // ✅ Show results summary
+  if (showResults) {
     return (
-      <Card className="p-10 text-center max-w-md mx-auto mt-10">
-        <h2 className="text-2xl font-semibold mb-2">Quiz Completed 🎉</h2>
-        <p className="text-lg mb-4">
-          Your score: {score} / {quiz.length}
-        </p>
-        <Link href="/summarized">
-          <Button variant="outline">Back to Summary</Button>
-        </Link>
-      </Card>
+      <div className="flex flex-col gap-6">
+        <CardHeader className="flex justify-between items-center p-0">
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2 items-center">
+              <Sparkles />
+              <CardTitle>Results</CardTitle>
+            </div>
+            <CardDescription>Your quiz results summary</CardDescription>
+          </div>
+          <QuizExitBtn />
+        </CardHeader>
+
+        <Card className="p-7">
+          <CardContent className="flex flex-col gap-4">
+            <p className="text-lg font-medium">
+              You got <span className="font-bold">{correctCount}</span> out of{" "}
+              <span className="font-bold">{totalQuestions}</span> correct!
+            </p>
+
+            <div className="flex flex-col gap-4 mt-4">
+              {quiz.map((q, i) => (
+                <div
+                  key={i}
+                  className={`p-3 rounded-lg border ${
+                    selectedAnswers[i] === Number(q.answer)
+                      ? "bg-green-100 border-green-500"
+                      : "bg-red-100 border-red-400"
+                  }`}
+                >
+                  <p className="font-medium">
+                    {i + 1}. {q.question}
+                  </p>
+                  <p className="text-sm">
+                    Your answer:{" "}
+                    {q.options[selectedAnswers[i]] ?? "No answer selected"}
+                  </p>
+                  <p className="text-sm">
+                    Correct answer: {q.options[Number(q.answer)]}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+
+          <CardFooter className="flex justify-end p-0">
+            <Button onClick={() => window.location.reload()}>
+              Retake Quiz
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     );
   }
 
+  // ✅ Regular quiz question UI
   return (
-    <div className="max-w-xl mx-auto mt-10 flex flex-col gap-6">
-      <div className="flex justify-between items-center">
-        <div className="flex gap-2 items-center">
-          <Sparkles />
-          <h2 className="text-xl font-semibold">Quick Test</h2>
-        </div>
-        <Link href="/summarized">
-          <Button variant="outline" size="icon">
-            <X />
-          </Button>
-        </Link>
+    <div className="w-full flex flex-col gap-6">
+      <div>
+        <CardHeader className="p-0 flex justify-between items-center">
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2 items-center">
+              <Sparkles />
+              <CardTitle>Quick Test</CardTitle>
+            </div>
+            <CardDescription>
+              Test your knowledge from the generated content
+            </CardDescription>
+          </div>
+          <QuizExitBtn />
+        </CardHeader>
       </div>
 
-      <Card className="p-6">
-        <h3 className="text-lg font-medium mb-2">{q.question}</h3>
-        <p className="text-sm text-gray-500 mb-4">
-          {index + 1} / {quiz.length}
-        </p>
+      <Card className="p-7">
+        <CardContent className="flex flex-col gap-5 p-0">
+          <div className="flex justify-between">
+            <h3 className="text-xl font-medium">{currentQuestion.question}</h3>
+            <p className="text-sm text-muted-foreground">
+              {currentQuestionIndex + 1} / {totalQuestions}
+            </p>
+          </div>
 
-        <div className="flex flex-col gap-2">
-          {q.options.map((opt: string, i: number) => {
-            const isCorrect = opt === correct;
-            const isSelected = selected === opt;
-            const style =
-              selected && isCorrect
-                ? "bg-green-100 border-green-500 text-green-800"
-                : selected && isSelected && !isCorrect
-                ? "bg-red-100 border-red-500 text-red-800"
-                : "";
-            return (
-              <Button
-                key={i}
-                onClick={() => handleAnswer(opt)}
-                variant="outline"
-                className={`justify-start ${style}`}
-              >
-                {opt}
-              </Button>
-            );
-          })}
-        </div>
+          <div className="flex flex-col gap-2">
+            {currentQuestion.options.map((option, index) => {
+              const isSelected =
+                selectedAnswers[currentQuestionIndex] === index;
+              const isAnswered =
+                selectedAnswers[currentQuestionIndex] !== undefined;
+
+              return (
+                <Button
+                  key={index}
+                  variant={"outline"}
+                  disabled={isAnswered}
+                  className={`text-[14px] font-medium justify-start transition-all ${
+                    isSelected ? "bg-primary text-white" : ""
+                  }`}
+                  onClick={() => handleAnswerSelect(index)}
+                >
+                  {option}
+                </Button>
+              );
+            })}
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex justify-end p-0">
+          {currentQuestionIndex < totalQuestions - 1 && (
+            <Button
+              variant="secondary"
+              onClick={() => setCurrentQuestionIndex(currentQuestionIndex + 1)}
+              disabled={selectedAnswers[currentQuestionIndex] === undefined}
+            >
+              Next
+            </Button>
+          )}
+        </CardFooter>
       </Card>
     </div>
   );
-}
+};
+
+export default QuickTest;

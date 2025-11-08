@@ -4,6 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// 🧹 Энэ функц нь үг хоорондын хашилт (') илүүдэл орсон хэсгийг цэвэрлэж өгдөг.
+// Жишээ нь: it's → it s  гэх мэт.
+// Зарим үед өгөгдөл илгээхэд AI болон SQL-д асуудал үүсгэдэг тул ингэж цэвэрлэдэг.
 const replaceApostrophes = (str: string) => {
   return str.replace(/(\w)+'+(\w+)/g, "$1 $2");
 };
@@ -29,10 +32,6 @@ export const POST = async (req: NextRequest) => {
   });
   const text = replaceApostrophes(response.text || "");
 
-  console.log("Title", titlePrompt);
-  console.log("content", transformedContentPrompt);
-  console.log("text", text);
-
   try {
     const articleContent = await query(
       `INSERT INTO articles(title, content, summary) VALUES($1, $2, $3)`,
@@ -47,6 +46,6 @@ export const POST = async (req: NextRequest) => {
 };
 
 export const GET = async () => {
-  const articles = await query("SELECT * FROM article");
-  return Response.json({ message: "success", data: articles });
+  const articles = await query("SELECT * FROM articles");
+  return Response.json({ message: "success", articles });
 };

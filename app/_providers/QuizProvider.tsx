@@ -1,125 +1,137 @@
 "use client";
 
-import { QuizQuestion } from "@/lib/types";
+import { ArticleType, QuizQuestion } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import axios from "axios";
 
-type Props = {
-  children: ReactNode;
-};
+type Props = { children: ReactNode };
 
 type QuizContextType = {
   titlePrompt: string;
   contentPrompt: string;
   promptSummary: string;
   loading: boolean;
-  //   quiz: string;
   quiz: QuizQuestion[];
-  refetchContentSummary: (e: React.FormEvent) => Promise<void>;
-  refetchQuizGenerator: (e: React.FormEvent) => Promise<void>;
+  articles: ArticleType[];
   handleTitle: (value: string) => void;
   handleContent: (value: string) => void;
+  refetchContentSummary: (e: React.FormEvent) => Promise<void>;
+  refetchQuizGenerator: (e: React.FormEvent) => Promise<void>;
+  refetchArticles: () => Promise<void>;
 };
 
-//creating context
+// --- Create Context ---
 const QuizContext = createContext({} as QuizContextType);
 
 export const QuizProvider = ({ children }: Props) => {
   const router = useRouter();
 
-  const [titlePrompt, setTitlePrompt] = useState<string>("");
-  const [contentPrompt, setContentPrompt] = useState<string>("");
-  const [promptSummary, setPromptSummary] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  //   const [quiz, setQuiz] = useState<string>("");
+  // --- State management ---
+  const [titlePrompt, setTitlePrompt] = useState("");
+  const [contentPrompt, setContentPrompt] = useState("");
+  const [promptSummary, setPromptSummary] = useState("");
   const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
+  const [articles, setArticles] = useState<ArticleType[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const contentSummary = async (e: React.FormEvent) => {
+  // --- Handlers for input fields ---
+  const handleTitle = (value: string) => setTitlePrompt(value);
+  const handleContent = (value: string) => setContentPrompt(value);
+
+  // --- 1️⃣ Generate Summary ---
+  const refetchContentSummary = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // setTitlePrompt("");
-    // setContentPrompt("");
-    // setPromptSummary("");
 
     try {
-      // const response = await fetch("/api/summarizer", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ contentPrompt, titlePrompt }),
-      // });
-
-      const response = await axios.post("/api/summarizer", {
-        contentPrompt,
+      const { data } = await axios.post("/api/summarizer", {
         titlePrompt,
+        contentPrompt,
       });
-      const data = await response.data;
-      console.log(data.text, "data");
+
       if (data.text) {
         setPromptSummary(data.text);
+        router.push("/summarized");
       } else {
         alert("Failed to generate summary");
       }
+    } catch (error) {
+      console.error("Error generating summary:", error);
     } finally {
       setLoading(false);
-      router.push("/summarized");
     }
   };
 
-  const handleTitle = (value: string) => {
-    setTitlePrompt(value);
-  };
-
-  const handleContent = (value: string) => {
-    setContentPrompt(value);
-  };
-
-  const quizGenerator = async (e: React.FormEvent) => {
+  // --- 2️⃣ Generate Quiz Questions ---
+  const refetchQuizGenerator = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // setTitlePrompt("");
-    // setContentPrompt("");
-    // setPromptSummary("");
 
     try {
-      const response = await fetch("/api/generate-quiz", {
+      const response = await fetch("/api/quizQs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentPrompt, quiz }),
+        body: JSON.stringify({ contentPrompt }),
       });
+
       const data = await response.json();
-      //   console.log(data.text, "data");
-      console.log(data.question, " question ");
+
       if (data.text) {
-        //regex for cleaning json
-        let cleanedJson = data.text.replace(/```json\s*|```/g, "").trim();
+        const cleanedJson = data.text.replace(/```json\s*|```/g, "").trim();
+        const parsedQuiz = JSON.parse(cleanedJson);
 
-        // Parse the cleaned JSON
-        const quizData = JSON.parse(cleanedJson);
-
-        console.log(quizData);
-        setQuiz(quizData);
+        setQuiz(parsedQuiz);
+        router.push("/quiz");
       } else {
-        alert("Failed to generate summary");
+        alert("Failed to generate quiz");
       }
+    } catch (error) {
+      console.error("Error generating quiz:", error);
     } finally {
       setLoading(false);
-      router.push("/quiz");
     }
   };
 
+  // --- 3️⃣ Fetch All Articles ---
+  const refetchArticles = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get("/api/summarizer");
+      setArticles(data.articles || []);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- Load articles on mount ---
+  useEffect(() => {
+    refetchArticles();
+  }, []);
+
+  // --- Provide all values to the context ---
   return (
     <QuizContext.Provider
       value={{
-        handleTitle,
-        handleContent,
         titlePrompt,
         contentPrompt,
         promptSummary,
-        loading,
         quiz,
-        refetchContentSummary: contentSummary,
-        refetchQuizGenerator: quizGenerator,
+        articles,
+        loading,
+        handleTitle,
+        handleContent,
+        refetchContentSummary,
+        refetchQuizGenerator,
+        refetchArticles,
       }}
     >
       {children}
@@ -127,6 +139,5 @@ export const QuizProvider = ({ children }: Props) => {
   );
 };
 
-export const useData = () => {
-  return useContext(QuizContext);
-};
+// --- Hook for easy access to context ---
+export const useData = () => useContext(QuizContext);
