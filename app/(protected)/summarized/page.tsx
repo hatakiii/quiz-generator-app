@@ -1,4 +1,4 @@
-import SummerizedContent from "@/app/_components/main/SummerizadContent";
+import SummerizedContent from "@/components/main/SummerizadContent";
 
 const Page = () => {
   return (

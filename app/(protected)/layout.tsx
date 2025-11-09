@@ -1,8 +1,8 @@
 "use client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import HomeSideBar from "@/app/_components/home/HomeSideBar";
+import HomeSideBar from "@/components/home/HomeSideBar";
 import { useState } from "react";
-import { QuizProvider } from "@/app/_providers/QuizProvider";
+import { EverythingProvider } from "@/app/_providers/EverythingProvider";
 import { ArticleType } from "@/lib/types";
 import axios from "axios";
 
@@ -36,7 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           )}
         </div>
       </main>
-      <QuizProvider>{children}</QuizProvider>
+      <EverythingProvider>{children}</EverythingProvider>
     </SidebarProvider>
   );
 }

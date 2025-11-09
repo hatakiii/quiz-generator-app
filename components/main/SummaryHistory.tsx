@@ -1,7 +1,7 @@
 "use client";
 
-import { SeeContentBtn } from "@/app/_components/main/SeeContentBtn";
-import { useData } from "@/app/_providers/QuizProvider";
+import { SeeContentBtn } from "@/components/main/SeeContentBtn";
+import { useData } from "@/app/_providers/EverythingProvider";
 import { Button } from "@/components/ui/button";
 import {
   Card,

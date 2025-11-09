@@ -14,7 +14,7 @@ import { ArticleType } from "@/lib/types";
 import { BookOpen, ChevronLeft, FileText, Sparkles } from "lucide-react";
 import axios from "axios";
 import Link from "next/link";
-import { useData } from "@/app/_providers/QuizProvider";
+import { useData } from "@/app/_providers/EverythingProvider";
 
 const SummaryHistory = () => {
   const router = useRouter();

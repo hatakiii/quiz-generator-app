@@ -1,4 +1,4 @@
-import SummaryHistory from "@/app/_components/main/SummaryHistory";
+import SummaryHistory from "@/components/main/SummaryHistory";
 
 const Page = () => {
   return (

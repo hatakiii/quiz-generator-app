@@ -1,4 +1,4 @@
-import QuickTest from "@/app/_components/main/QuickTest";
+import QuickTest from "@/components/main/QuickTest";
 
 const Page = () => {
   return (

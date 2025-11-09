@@ -1,4 +1,4 @@
-import GenerateSummary from "../_components/main/GenerateSummary";
+import GenerateSummary from "../../components/main/GenerateSummary";
 
 export default function Home() {
   return (

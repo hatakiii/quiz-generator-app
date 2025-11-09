@@ -1,4 +1,4 @@
-import { useData } from "@/app/_providers/QuizProvider";
+import { useData } from "@/app/_providers/EverythingProvider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

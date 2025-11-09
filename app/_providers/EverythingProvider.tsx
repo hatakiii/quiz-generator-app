@@ -13,7 +13,7 @@ import axios from "axios";
 
 type Props = { children: ReactNode };
 
-type QuizContextType = {
+type ContextType = {
   titlePrompt: string;
   contentPrompt: string;
   promptSummary: string;
@@ -28,9 +28,9 @@ type QuizContextType = {
 };
 
 // --- Create Context ---
-const QuizContext = createContext({} as QuizContextType);
+const EverythingContext = createContext({} as ContextType);
 
-export const QuizProvider = ({ children }: Props) => {
+export const EverythingProvider = ({ children }: Props) => {
   const router = useRouter();
 
   // --- State management ---
@@ -75,7 +75,7 @@ export const QuizProvider = ({ children }: Props) => {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/quizQs", {
+      const response = await fetch("/api/quizGenerator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contentPrompt }),
@@ -119,7 +119,7 @@ export const QuizProvider = ({ children }: Props) => {
 
   // --- Provide all values to the context ---
   return (
-    <QuizContext.Provider
+    <EverythingContext.Provider
       value={{
         titlePrompt,
         contentPrompt,
@@ -135,9 +135,9 @@ export const QuizProvider = ({ children }: Props) => {
       }}
     >
       {children}
-    </QuizContext.Provider>
+    </EverythingContext.Provider>
   );
 };
 
 // --- Hook for easy access to context ---
-export const useData = () => useContext(QuizContext);
+export const useData = () => useContext(EverythingContext);
