@@ -51,7 +51,7 @@ export const EverythingProvider = ({ children }: Props) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post("/api/summarizer", {
+      const { data } = await axios.post("/api/articleSummarizer", {
         titlePrompt,
         contentPrompt,
       });
@@ -103,7 +103,7 @@ export const EverythingProvider = ({ children }: Props) => {
   const refetchArticles = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get("/api/summarizer");
+      const { data } = await axios.get("/api/articleSummarizer");
       setArticles(data.articles || []);
     } catch (error) {
       console.error("Error fetching articles:", error);

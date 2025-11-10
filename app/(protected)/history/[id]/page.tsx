@@ -29,7 +29,7 @@ const SummaryHistory = () => {
   const getArticle = async (id: string) => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/summarizer");
+      const { data } = await axios.get("/api/articleSummarizer");
       const found = data.articles.find((a: ArticleType) => a.id === Number(id));
       handleContent(found.content);
       setArticle(found);

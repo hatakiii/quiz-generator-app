@@ -27,7 +27,7 @@ const HomeSideBar = ({ open }: Props) => {
   const getArticles = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/summarizer");
+      const { data } = await axios.get("/api/articleSummarizer");
       setArticles(data.articles || []);
     } catch (error) {
       console.error("Error fetching articles:", error);

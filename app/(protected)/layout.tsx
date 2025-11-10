@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const getArticles = async () => {
     setLoading(true);
-    const result = await axios.get("/api/summarizer");
+    const result = await axios.get("/api/articleSummarizer");
     const data = await result.data;
     console.log(data, "data");
     setArticles(data);

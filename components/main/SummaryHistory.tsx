@@ -26,7 +26,7 @@ const SummaryHistory = () => {
 
   const getArticles = async () => {
     setLoading(true);
-    const result = await axios.get("/api/summarizer");
+    const result = await axios.get("/api/articleSummarizer");
     const data = await result.data;
     console.log(data.articles.rows, "data");
     setArticles(data.articles.rows);
