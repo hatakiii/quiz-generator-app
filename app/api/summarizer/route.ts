@@ -1,4 +1,5 @@
 import { query } from "@/lib/connectDb";
+import { prisma } from "@/lib/prisma";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -33,10 +34,18 @@ export const POST = async (req: NextRequest) => {
   const text = replaceApostrophes(response.text || "");
 
   try {
-    const articleContent = await query(
-      `INSERT INTO articles(title, content, summary) VALUES($1, $2, $3)`,
-      [titlePrompt, transformedContentPrompt, text]
-    );
+    // const articleContent = await query(
+    //   `INSERT INTO articles(title, content, summary) VALUES($1, $2, $3)`,
+    //   [titlePrompt, transformedContentPrompt, text]
+    // );
+
+    const articleContent = await prisma.articles.create({
+      data: {
+        title: titlePrompt,
+        content: transformedContentPrompt,
+        summary: text,
+      },
+    });
 
     return NextResponse.json({ text, data: articleContent });
   } catch (e) {
@@ -46,6 +55,8 @@ export const POST = async (req: NextRequest) => {
 };
 
 export const GET = async () => {
-  const articles = await query("SELECT * FROM articles");
+  // const articles = await query("SELECT * FROM articles");
+  const articles = await prisma.articles.findMany();
+
   return Response.json({ message: "success", articles });
 };

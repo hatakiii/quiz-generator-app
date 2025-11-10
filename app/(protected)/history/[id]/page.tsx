@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { ArticleType } from "@/lib/types";
 import { BookOpen, ChevronLeft, FileText, Sparkles } from "lucide-react";
+import { LuSparkles } from "react-icons/lu";
 import axios from "axios";
 import Link from "next/link";
 import { useData } from "@/app/_providers/EverythingProvider";
@@ -19,7 +20,7 @@ import { useData } from "@/app/_providers/EverythingProvider";
 const SummaryHistory = () => {
   const router = useRouter();
   const params = useParams();
-  const { refetchQuizGenerator } = useData();
+  const { refetchQuizGenerator, handleContent } = useData();
 
   const [loading, setLoading] = useState(false);
   const [article, setArticle] = useState<ArticleType | null>(null);
@@ -29,9 +30,8 @@ const SummaryHistory = () => {
     try {
       setLoading(true);
       const { data } = await axios.get("/api/summarizer");
-      const found = data.articles.rows.find(
-        (a: ArticleType) => a.id === Number(id)
-      );
+      const found = data.articles.find((a: ArticleType) => a.id === Number(id));
+      handleContent(found.content);
       setArticle(found);
     } catch (error) {
       console.error("Error loading article:", error);
@@ -63,7 +63,7 @@ const SummaryHistory = () => {
       <Card className="p-7">
         <CardHeader className="p-0 mb-4">
           <div className="flex gap-2 items-center">
-            <Sparkles />
+            <LuSparkles />
             <CardTitle>{article.title}</CardTitle>
           </div>
         </CardHeader>

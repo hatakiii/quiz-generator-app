@@ -28,7 +28,7 @@ const HomeSideBar = ({ open }: Props) => {
     try {
       setLoading(true);
       const { data } = await axios.get("/api/summarizer");
-      setArticles(data.articles.rows || []);
+      setArticles(data.articles || []);
     } catch (error) {
       console.error("Error fetching articles:", error);
     } finally {

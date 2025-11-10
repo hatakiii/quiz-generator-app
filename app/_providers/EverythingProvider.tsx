@@ -80,8 +80,8 @@ export const EverythingProvider = ({ children }: Props) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contentPrompt }),
       });
-
       const data = await response.json();
+      console.log("AJILLAA", data);
 
       if (data.text) {
         const cleanedJson = data.text.replace(/```json\s*|```/g, "").trim();
