@@ -101,7 +101,13 @@ const QuickTest = () => {
           </CardContent>
 
           <CardFooter className="flex justify-end p-0">
-            <Button onClick={() => window.location.reload()}>
+            <Button
+              onClick={() => {
+                setSelectedAnswers([]);
+                setCurrentQuestionIndex(0);
+                setShowResults(false);
+              }}
+            >
               Retake Quiz
             </Button>
           </CardFooter>

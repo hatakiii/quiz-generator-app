@@ -25,6 +25,17 @@ export const POST = async (req: NextRequest) => {
   }
   const transformedContentPrompt = replaceApostrophes(contentPrompt);
 
+  const existingQuiz = await prisma.quizzes.findMany({
+    where: {
+      articleid: articleId,
+    },
+  });
+
+  if (existingQuiz.length > 0) {
+    console.log("Using existing quiz, not generating again");
+    return NextResponse.json(existingQuiz);
+  }
+
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: transformedContentPrompt,
@@ -54,7 +65,7 @@ export const POST = async (req: NextRequest) => {
             question: q.question,
             options: q.options,
             answer: q.answer,
-            articleid: articleId || 1,
+            articleid: articleId,
           },
         })
       )

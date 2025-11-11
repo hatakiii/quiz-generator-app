@@ -1,3 +1,4 @@
+//app/(protected)/history/[id]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -51,6 +52,7 @@ const SummaryHistory = () => {
       </p>
     );
   }
+  console.log("articleid", article.id);
 
   return (
     <div>
@@ -91,7 +93,9 @@ const SummaryHistory = () => {
         </CardContent>
 
         <CardFooter className="flex justify-end p-0">
-          <Button onClick={refetchQuizGenerator}>Take a quiz</Button>
+          <Button onClick={(e) => refetchQuizGenerator(e, article.id)}>
+            Take a quiz
+          </Button>
         </CardFooter>
       </Card>
     </div>

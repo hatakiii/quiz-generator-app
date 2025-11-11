@@ -23,7 +23,10 @@ type ContextType = {
   handleTitle: (value: string) => void;
   handleContent: (value: string) => void;
   refetchContentSummary: (e: React.FormEvent) => Promise<void>;
-  refetchQuizGenerator: (e: React.FormEvent) => Promise<void>;
+  refetchQuizGenerator: (
+    e: React.FormEvent,
+    articleId?: number
+  ) => Promise<void>;
   refetchArticles: () => Promise<void>;
 };
 
@@ -70,24 +73,27 @@ export const EverythingProvider = ({ children }: Props) => {
   };
 
   // --- 2️⃣ Generate Quiz Questions ---
-  const refetchQuizGenerator = async (e: React.FormEvent) => {
+  const refetchQuizGenerator = async (
+    e: React.FormEvent,
+    articleId?: number
+  ) => {
     e.preventDefault();
     setLoading(true);
-
+    console.log("CONTENT PROMpt", contentPrompt);
     try {
       const response = await fetch("/api/quizGenerator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentPrompt }),
+        body: JSON.stringify({ contentPrompt, articleId }),
       });
       const data = await response.json();
       console.log("AJILLAA", data);
 
-      if (data.text) {
-        const cleanedJson = data.text.replace(/```json\s*|```/g, "").trim();
-        const parsedQuiz = JSON.parse(cleanedJson);
+      if (data) {
+        // const cleanedJson = data.replace(/```json\s*|```/g, "").trim();
+        // const parsedQuiz = JSON.parse(cleanedJson);
 
-        setQuiz(parsedQuiz);
+        setQuiz(data);
         router.push("/quiz");
       } else {
         alert("Failed to generate quiz");
