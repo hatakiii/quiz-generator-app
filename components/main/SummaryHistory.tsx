@@ -26,11 +26,19 @@ const SummaryHistory = () => {
 
   const getArticles = async () => {
     setLoading(true);
-    const result = await axios.get("/api/articleSummarizer");
-    const data = await result.data;
-    console.log(data.articles.rows, "data");
-    setArticles(data.articles.rows);
-    setLoading(false);
+    try {
+      const result = await axios.get("/api/articleSummarizer");
+      const data = result.data; // axios already unwraps response.data
+      // API returns { message: 'success', articles }
+      // earlier code expected `articles.rows` (pg query shape) which is incorrect
+      console.log(data.articles, "fetched articles");
+      setArticles(Array.isArray(data.articles) ? data.articles : []);
+    } catch (err) {
+      console.error("Failed to fetch articles", err);
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
   };
   console.log(articles, " articles");
   useEffect(() => {
@@ -79,29 +87,43 @@ const SummaryHistory = () => {
                       Article Content
                     </p>
                   </div>
+                  {/* show a short preview and allow reading the full content if needed */}
                   <p className="text-[14px] leading-5 font-normal">
-                    {article.content}
+                    {article.content?.length && article.content.length > 300
+                      ? article.content.slice(0, 300) + "..."
+                      : article.content}
                   </p>
                 </div>
               </CardContent>
+              <CardFooter className="flex justify-between p-0">
+                <Button
+                  type="button"
+                  className="w-content"
+                  onClick={(e) =>
+                    refetchQuizGenerator(e, article.id, article.content)
+                  }
+                >
+                  {loading ? "Generating quizes..." : "Take a quiz"}
+                </Button>
+              </CardFooter>
             </div>
           );
         })}
-
-        <CardFooter className="flex justify-between p-0">
-          {/* <SeeContentBtn /> */}
-          <Button
-            type="submit"
-            className="w-content"
-            onClick={refetchQuizGenerator}
-            // disabled={loading || !contentPrompt || !titlePrompt}
-          >
-            {loading ? "Generating quizes..." : "Take a quiz"}
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   );
 };
 
 export default SummaryHistory;
+
+// <CardFooter className="flex justify-between p-0">
+//           {/* <SeeContentBtn /> */}
+//           <Button
+//             type="submit"
+//             className="w-content"
+//             onClick={(e) => refetchQuizGenerator(e, articles[0]?.id)}
+//             // disabled={loading || !contentPrompt || !titlePrompt}
+//           >
+//             {loading ? "Generating quizes..." : "Take a quiz"}
+//           </Button>
+//         </CardFooter>

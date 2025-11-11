@@ -25,7 +25,8 @@ type ContextType = {
   refetchContentSummary: (e: React.FormEvent) => Promise<void>;
   refetchQuizGenerator: (
     e: React.FormEvent,
-    articleId?: number
+    articleId?: number,
+    articleContent?: string
   ) => Promise<void>;
   refetchArticles: () => Promise<void>;
 };
@@ -43,6 +44,7 @@ export const EverythingProvider = ({ children }: Props) => {
   const [quiz, setQuiz] = useState<QuizQuestion[]>([]);
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentArticleId, setCurrentArticleId] = useState<number | null>(null);
 
   // --- Handlers for input fields ---
   const handleTitle = (value: string) => setTitlePrompt(value);
@@ -58,6 +60,10 @@ export const EverythingProvider = ({ children }: Props) => {
         titlePrompt,
         contentPrompt,
       });
+
+      // Save created article id to avoid creating duplicates later
+      const createdId = data?.data?.id ?? data?.article?.id ?? data?.id ?? null;
+      if (createdId) setCurrentArticleId(createdId);
 
       if (data.text) {
         setPromptSummary(data.text);
@@ -75,26 +81,72 @@ export const EverythingProvider = ({ children }: Props) => {
   // --- 2️⃣ Generate Quiz Questions ---
   const refetchQuizGenerator = async (
     e: React.FormEvent,
-    articleId?: number
+    articleId?: number,
+    articleContent?: string
   ) => {
     e.preventDefault();
     setLoading(true);
-    console.log("CONTENT PROMpt", contentPrompt);
+    console.log("CONTENT PROMPT", contentPrompt);
+
     try {
+      // ✅ FIX: Ensure article ID is obtained correctly. Prefer existing currentArticleId to avoid duplicates
+      let targetArticleId = articleId ?? currentArticleId ?? undefined;
+      if (typeof targetArticleId !== "number") {
+        try {
+          const createRes = await axios.post("/api/articleSummarizer", {
+            titlePrompt,
+            contentPrompt: articleContent || contentPrompt,
+          });
+
+          // Backend returns { text, data: article }, but be defensive and check several shapes
+          targetArticleId =
+            createRes.data?.data?.id ??
+            createRes.data?.article?.id ??
+            createRes.data?.id;
+
+          if (targetArticleId) setCurrentArticleId(targetArticleId as number);
+
+          console.log("Created new article with ID:", targetArticleId);
+        } catch (err) {
+          console.error("Failed to create article before quiz generation", err);
+          // continue without article id — API will return parsed quiz array but won't persist
+        }
+      }
+
       const response = await fetch("/api/quizGenerator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentPrompt, articleId }),
+        body: JSON.stringify({
+          contentPrompt: articleContent || contentPrompt,
+          articleId: targetArticleId,
+        }),
       });
+
       const data = await response.json();
       console.log("AJILLAA", data);
 
-      if (data) {
-        // const cleanedJson = data.replace(/```json\s*|```/g, "").trim();
-        // const parsedQuiz = JSON.parse(cleanedJson);
-
-        setQuiz(data);
+      // --- Handle quiz responses ---
+      if (Array.isArray(data)) {
+        // Stored quizzes from DB
+        setQuiz(
+          data.map((q: any) => ({
+            question: q.question,
+            options: q.options,
+            answer: Number(q.answer),
+          }))
+        );
         router.push("/quiz");
+      } else if (data && data.text) {
+        // Parse AI text
+        try {
+          const cleanedJson = data.text.replace(/```json\s*|```/g, "").trim();
+          const parsedQuiz = JSON.parse(cleanedJson);
+          setQuiz(parsedQuiz);
+          router.push("/quiz");
+        } catch (err) {
+          console.error("Failed to parse quiz JSON from AI text", err);
+          alert("Failed to generate quiz");
+        }
       } else {
         alert("Failed to generate quiz");
       }
