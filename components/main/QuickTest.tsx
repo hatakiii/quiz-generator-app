@@ -70,9 +70,12 @@ const QuickTest = () => {
 
         <Card className="p-7">
           <CardContent className="flex flex-col gap-4">
-            <p className="text-lg font-medium">
-              You got <span className="font-bold">{correctCount}</span> out of{" "}
-              <span className="font-bold">{totalQuestions}</span> correct!
+            <p className="text-2xl  text-primary font-semibold leading-8">
+              Your score <span className="font-bold">{correctCount}</span>
+              {" / "}
+              <span className="font-medium text-base leading-6">
+                {totalQuestions}
+              </span>
             </p>
 
             <div className="flex flex-col gap-4 mt-4">
@@ -100,7 +103,7 @@ const QuickTest = () => {
             </div>
           </CardContent>
 
-          <CardFooter className="flex justify-end p-0">
+          <CardFooter className="flex justify-between p-0">
             <Button
               onClick={() => {
                 setSelectedAnswers([]);
@@ -110,6 +113,7 @@ const QuickTest = () => {
             >
               Retake Quiz
             </Button>
+            <Button>Save and leave</Button>
           </CardFooter>
         </Card>
       </div>
