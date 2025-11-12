@@ -1,3 +1,5 @@
+//api/quizGenerator/route.ts
+
 import { prisma } from "@/lib/prisma";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";

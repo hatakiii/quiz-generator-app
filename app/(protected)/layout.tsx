@@ -5,6 +5,7 @@ import { useState } from "react";
 import { EverythingProvider } from "@/app/_providers/EverythingProvider";
 import { ArticleType } from "@/lib/types";
 import axios from "axios";
+import Header from "@/components/main/Header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -21,6 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
   return (
     <SidebarProvider className="bg-white" open={open} onOpenChange={setOpen}>
+      <Header />
       <HomeSideBar open={open} />
       <main>
         <div>

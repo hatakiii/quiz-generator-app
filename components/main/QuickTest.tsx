@@ -15,8 +15,11 @@ import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import QuizExitBtn from "./QuizExitBtn";
 
+import { useRouter } from "next/navigation";
+
 const QuickTest = () => {
-  const { quiz } = useData();
+  const router = useRouter();
+  const { quiz, resetFields } = useData();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
@@ -48,6 +51,11 @@ const QuickTest = () => {
     }, 700);
   };
 
+  const handleGoHome = () => {
+    resetFields();
+    router.push("/");
+  };
+
   // ✅ Calculate results
   const correctCount = quiz.reduce((count, q, i) => {
     if (selectedAnswers[i] === Number(q.answer)) count++;
@@ -70,14 +78,19 @@ const QuickTest = () => {
         </CardHeader>
 
         <Card className="p-7 w-107 min-h-132">
-          <CardContent className="flex flex-col gap-4 justify-start items-center">
-            <p className="text-2xl  text-primary font-semibold leading-8 flex justify-self-start">
-              Your score <span className="font-bold">{correctCount}</span>
-              {" / "}
+          <CardContent className="flex flex-col gap-4 justify-start items-start px-0">
+            <div className="text-2xl  text-primary font-semibold leading-8 flex justify-self-start">
+              Your score{" "}
+              <span className="font-bold">
+                {"   "}
+                {correctCount}
+              </span>
+              {"  "}
               <span className="font-medium text-base leading-6">
+                {"   "}/{"  "}
                 {totalQuestions}
               </span>
-            </p>
+            </div>
 
             <div className="flex flex-col gap-4 mt-4 w-93 min-h-86">
               {quiz.map((q, i) => (
@@ -124,7 +137,7 @@ const QuickTest = () => {
             >
               Retake Quiz
             </Button>
-            <Button>Save and leave</Button>
+            <Button onClick={handleGoHome}>Save and leave</Button>
           </CardFooter>
         </Card>
       </div>

@@ -1,3 +1,5 @@
+//api/articleSummarizer/route.ts
+
 import { query } from "@/lib/connectDb";
 import { prisma } from "@/lib/prisma";
 import { GoogleGenAI } from "@google/genai";

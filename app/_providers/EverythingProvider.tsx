@@ -29,6 +29,7 @@ type ContextType = {
     articleContent?: string
   ) => Promise<void>;
   refetchArticles: () => Promise<void>;
+  resetFields: () => void;
 };
 
 // --- Create Context ---
@@ -169,6 +170,14 @@ export const EverythingProvider = ({ children }: Props) => {
       setLoading(false);
     }
   };
+  // --- Reset Fields ----
+  const resetFields = () => {
+    setTitlePrompt("");
+    setContentPrompt("");
+    setPromptSummary("");
+    setQuiz([]);
+    setCurrentArticleId(null);
+  };
 
   // --- Load articles on mount ---
   useEffect(() => {
@@ -190,6 +199,7 @@ export const EverythingProvider = ({ children }: Props) => {
         refetchContentSummary,
         refetchQuizGenerator,
         refetchArticles,
+        resetFields,
       }}
     >
       {children}
