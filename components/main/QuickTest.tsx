@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import QuizExitBtn from "./QuizExitBtn";
@@ -61,16 +62,16 @@ const QuickTest = () => {
           <div className="flex flex-col gap-2">
             <div className="flex gap-2 items-center">
               <Sparkles />
-              <CardTitle>Results</CardTitle>
+              <CardTitle>Quiz completed</CardTitle>
             </div>
-            <CardDescription>Your quiz results summary</CardDescription>
+            <CardDescription>Let's see what you did</CardDescription>
           </div>
           <QuizExitBtn />
         </CardHeader>
 
-        <Card className="p-7">
-          <CardContent className="flex flex-col gap-4">
-            <p className="text-2xl  text-primary font-semibold leading-8">
+        <Card className="p-7 w-107 min-h-132">
+          <CardContent className="flex flex-col gap-4 justify-start items-center">
+            <p className="text-2xl  text-primary font-semibold leading-8 flex justify-self-start">
               Your score <span className="font-bold">{correctCount}</span>
               {" / "}
               <span className="font-medium text-base leading-6">
@@ -78,26 +79,36 @@ const QuickTest = () => {
               </span>
             </p>
 
-            <div className="flex flex-col gap-4 mt-4">
+            <div className="flex flex-col gap-4 mt-4 w-93 min-h-86">
               {quiz.map((q, i) => (
                 <div
                   key={i}
-                  className={`p-3 rounded-lg border ${
-                    selectedAnswers[i] === Number(q.answer)
-                      ? "bg-green-100 border-green-500"
-                      : "bg-red-100 border-red-400"
-                  }`}
+                  className={`flex items-start p-3 gap-3 rounded-lg border min-h-10 `}
                 >
-                  <p className="font-medium">
-                    {i + 1}. {q.question}
-                  </p>
-                  <p className="text-sm">
-                    Your answer:{" "}
-                    {q.options[selectedAnswers[i]] ?? "No answer selected"}
-                  </p>
-                  <p className="text-sm">
-                    Correct answer: {q.options[Number(q.answer)]}
-                  </p>
+                  <Image
+                    src={`${
+                      selectedAnswers[i] === Number(q.answer)
+                        ? "check-circle.svg"
+                        : "x-circle.svg"
+                    }`}
+                    alt=""
+                    width={24}
+                    height={24}
+                  />
+                  <div className="flex flex-col gap-1">
+                    <p className="font-medium text-xs leading-4 text-[#737373]">
+                      {i + 1}. {q.question}
+                    </p>
+                    <p className="text-xs leading-4">
+                      Your answer:{" "}
+                      {q.options[selectedAnswers[i]] ?? "No answer selected"}
+                    </p>
+                    {selectedAnswers[i] !== Number(q.answer) && (
+                      <p className="text-xs leading-4 text-[#22C55E]">
+                        Correct answer: {q.options[Number(q.answer)]}
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
