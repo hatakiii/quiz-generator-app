@@ -1,6 +1,5 @@
 //api/articleSummarizer/route.ts
 
-import { query } from "@/lib/connectDb";
 import { prisma } from "@/lib/prisma";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
@@ -11,7 +10,16 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 // Жишээ нь: it's → it s  гэх мэт.
 // Зарим үед өгөгдөл илгээхэд AI болон SQL-д асуудал үүсгэдэг тул ингэж цэвэрлэдэг.
 const replaceApostrophes = (str: string) => {
-  return str.replace(/(\w)+'+(\w+)/g, "$1 $2");
+  // Replace only repeated or misplaced apostrophes, not valid possessives like "Lenin's"
+  return (
+    str
+      // Fix double or triple apostrophes like it''s → it's
+      .replace(/'{2,}/g, "'")
+      // Remove apostrophes not between letters (e.g., ' hello or hello ')
+      .replace(/(^'|'$)/g, "")
+      // Optional: remove isolated apostrophes surrounded by spaces
+      .replace(/\s+'\s+/g, " ")
+  );
 };
 
 export const POST = async (req: NextRequest) => {
