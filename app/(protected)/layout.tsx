@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
   return (
     <SidebarProvider className="bg-white" open={open} onOpenChange={setOpen}>
-      <Header />
+      {/* <Header /> */}
       <HomeSideBar open={open} />
       <main>
         <div>
