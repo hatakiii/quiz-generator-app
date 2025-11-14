@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 export const POST = async (req: Request) => {
   try {
     const body = await req.json();
+    console.log("body", body);
 
     // log incoming payload for debugging (trim to avoid huge output)
     try {
