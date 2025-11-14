@@ -4,7 +4,7 @@ import HomeSideBar from "@/components/home/HomeSideBar";
 import { useEffect, useState } from "react";
 import { EverythingProvider } from "@/app/_providers/EverythingProvider";
 import { ArticleType } from "@/lib/types";
-import axios, { Axios } from "axios";
+import axios from "axios"; // ✅ FIXED
 import Header from "@/components/main/Header";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -19,10 +19,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [articles, setArticles] = useState<ArticleType[]>([]);
 
   useEffect(() => {
-    if (isLoaded && !user) {
-      router.push("/login");
-    }
-    SaveUserInfo();
+    if (isLoaded && !user) return router.push("/login");
+    if (isLoaded && user) SaveUserInfo();
   }, [isLoaded, user]);
 
   if (!isLoaded) {
@@ -36,27 +34,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const getArticles = async () => {
     setLoading(true);
     const result = await axios.get("/api/articleSummarizer");
-    const data = await result.data;
+    const data = result.data;
     console.log(data, "data");
     setArticles(data);
     setLoading(false);
   };
 
   async function SaveUserInfo() {
-    if (!user) {
-      return;
-    }
+    if (!user) return;
+
     try {
-      const res = await axios.post("/api/login", user);
-      const data = await res.data;
-      console.log("data", data);
+      const payload = {
+        id: user.id,
+        email: user.primaryEmailAddress?.emailAddress,
+        name: user.fullName,
+        image: user.imageUrl,
+      };
+
+      const res = await axios.post("/api/login", payload);
+      console.log("Saved user:", res.data);
     } catch (err) {
-      console.error("Error ocurred fetching data", err);
+      console.error("Error occurred fetching data", err);
     }
   }
+
   return (
     <SidebarProvider className="bg-white" open={open} onOpenChange={setOpen}>
-      {/* <Header /> */}
       <HomeSideBar open={open} />
       <main>
         <div>
@@ -67,9 +70,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             >
               <SidebarTrigger className="w-6 h-6" />
             </div>
-          ) : (
-            ""
-          )}
+          ) : null}
         </div>
       </main>
       <EverythingProvider>{children}</EverythingProvider>
