@@ -5,10 +5,11 @@ import { useEffect, useState } from "react";
 import { EverythingProvider } from "@/app/_providers/EverythingProvider";
 import { ArticleType } from "@/lib/types";
 import axios from "axios"; // ✅ FIXED
-import Header from "@/components/main/Header";
+
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Divide } from "lucide-react";
+import { Header } from "@/components/main/Header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser();
@@ -59,21 +60,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SidebarProvider className="bg-white" open={open} onOpenChange={setOpen}>
-      <HomeSideBar open={open} />
-      <main>
-        <div>
-          {!open ? (
-            <div
-              className="pt-18 px-4 h-screen border border-[#E4E4E7]"
-              onClick={getArticles}
-            >
-              <SidebarTrigger className="w-6 h-6" />
-            </div>
-          ) : null}
-        </div>
-      </main>
-      <EverythingProvider>{children}</EverythingProvider>
-    </SidebarProvider>
+    <>
+      <SidebarProvider className="bg-white" open={open} onOpenChange={setOpen}>
+        <HomeSideBar open={open} />
+        <main>
+          <div>
+            {!open ? (
+              <div
+                className="pt-18 px-4 h-screen border border-[#E4E4E7]"
+                onClick={getArticles}
+              >
+                <SidebarTrigger className="w-6 h-6" />
+              </div>
+            ) : null}
+          </div>
+        </main>
+        <EverythingProvider>{children}</EverythingProvider>
+      </SidebarProvider>
+    </>
   );
 }
