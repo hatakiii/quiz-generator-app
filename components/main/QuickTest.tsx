@@ -14,6 +14,7 @@ import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import { useState } from "react";
 import QuizExitBtn from "./QuizExitBtn";
+import { useParams } from "next/navigation";
 
 import { useRouter } from "next/navigation";
 
@@ -26,6 +27,9 @@ const QuickTest = () => {
 
   const currentQuestion = quiz[currentQuestionIndex];
   const totalQuestions = quiz.length;
+
+  const params = useParams();
+  const articleId = params.id;
 
   if (!quiz || quiz.length === 0) {
     return (
@@ -51,7 +55,21 @@ const QuickTest = () => {
     }, 700);
   };
 
-  const handleGoHome = () => {
+  const handleGoHome = async () => {
+    try {
+      await fetch("/api/saveScore", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          articleId: Number(articleId),
+          score: correctCount,
+        }),
+      });
+    } catch (err) {
+      console.error("Error saving score", err);
+    }
     resetFields();
     router.push("/");
   };

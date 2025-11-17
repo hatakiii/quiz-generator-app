@@ -136,14 +136,14 @@ export const EverythingProvider = ({ children }: Props) => {
             answer: Number(q.answer),
           }))
         );
-        router.push("/quiz");
+        router.push(`/quiz/${targetArticleId}`);
       } else if (data && data.text) {
         // Parse AI text
         try {
           const cleanedJson = data.text.replace(/```json\s*|```/g, "").trim();
           const parsedQuiz = JSON.parse(cleanedJson);
           setQuiz(parsedQuiz);
-          router.push("/quiz");
+          router.push(`/quiz/${targetArticleId}`);
         } catch (err) {
           console.error("Failed to parse quiz JSON from AI text", err);
           alert("Failed to generate quiz");
