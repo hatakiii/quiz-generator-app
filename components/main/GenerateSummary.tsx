@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { FileText, Sparkles } from "lucide-react";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const GenerateSummary = () => {
   const {
@@ -22,6 +24,7 @@ const GenerateSummary = () => {
     refetchContentSummary,
     handleTitle,
     handleContent,
+    error,
   } = useData();
 
   return (
@@ -39,6 +42,14 @@ const GenerateSummary = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
+          {error && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
           <div className="flex flex-col gap-1">
             <div className="flex gap-1 items-center">
               <FileText className="w-[11px] h-[13px]" />

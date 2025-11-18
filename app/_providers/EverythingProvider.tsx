@@ -10,6 +10,7 @@ import {
   useState,
 } from "react";
 import axios from "axios";
+import { useUser } from "@clerk/nextjs";
 
 type Props = { children: ReactNode };
 
@@ -18,6 +19,7 @@ type ContextType = {
   contentPrompt: string;
   promptSummary: string;
   loading: boolean;
+  error: string | null;
   quiz: QuizQuestion[];
   articles: ArticleType[];
   handleTitle: (value: string) => void;
@@ -37,6 +39,7 @@ const EverythingContext = createContext({} as ContextType);
 
 export const EverythingProvider = ({ children }: Props) => {
   const router = useRouter();
+  const { isSignedIn } = useUser();
 
   // --- State management ---
   const [titlePrompt, setTitlePrompt] = useState("");
@@ -46,6 +49,7 @@ export const EverythingProvider = ({ children }: Props) => {
   const [articles, setArticles] = useState<ArticleType[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentArticleId, setCurrentArticleId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   // --- Handlers for input fields ---
   const handleTitle = (value: string) => setTitlePrompt(value);
@@ -55,6 +59,7 @@ export const EverythingProvider = ({ children }: Props) => {
   const refetchContentSummary = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       const { data } = await axios.post("/api/articleSummarizer", {
@@ -71,9 +76,36 @@ export const EverythingProvider = ({ children }: Props) => {
         router.push("/summarized");
       } else {
         alert("Failed to generate summary");
+        setError("Sorry, unable to generate summary. Try again");
       }
     } catch (error) {
       console.error("Error generating summary:", error);
+      // Axios алдааны төрлийг шалгах (Server-ээс ирсэн алдаа)
+      if (axios.isAxiosError(error) && error.response) {
+        const statusCode = error.response.status;
+
+        if (statusCode === 503) {
+          // 503 алдаа (Model Overloaded)
+          setError(
+            "AI загвар хэт ачаалалтай байна. Хэсэг хугацааны дараа дахин оролдоно уу."
+          );
+        } else if (statusCode >= 500) {
+          // Бусад сервер талын алдаа (5xx)
+          setError("Серверт түр зуурын алдаа гарлаа. Удахгүй засварлагдана.");
+        } else if (statusCode === 400) {
+          // Жишээ нь, 400 Bad Request
+          setError(
+            `Хүсэлтийн алдаа: ${
+              error.response.data.message || "Мэдээлэл дутуу байна."
+            }`
+          );
+        } else {
+          setError(`Алхам дуудах үед алдаа гарлаа (Код: ${statusCode}).`);
+        }
+      } else {
+        // Сүлжээний эсвэл үл мэдэгдэх алдаа
+        setError("Сүлжээний холболт тасарсан эсвэл үл мэдэгдэх алдаа гарлаа.");
+      }
     } finally {
       setLoading(false);
     }
@@ -181,8 +213,12 @@ export const EverythingProvider = ({ children }: Props) => {
 
   // --- Load articles on mount ---
   useEffect(() => {
-    refetchArticles();
-  }, []);
+    if (isSignedIn) {
+      refetchArticles();
+    } else {
+      setArticles([]);
+    }
+  }, [isSignedIn]);
 
   // --- Provide all values to the context ---
   return (
@@ -194,6 +230,7 @@ export const EverythingProvider = ({ children }: Props) => {
         quiz,
         articles,
         loading,
+        error,
         handleTitle,
         handleContent,
         refetchContentSummary,

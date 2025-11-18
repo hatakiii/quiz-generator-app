@@ -15,16 +15,21 @@ import { ArticleType } from "@/lib/types";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 
 type Props = { open: boolean };
 
 const HomeSideBar = ({ open }: Props) => {
   const router = useRouter();
+  const { isSignedIn } = useUser();
   const [loading, setLoading] = useState(false);
   const [articles, setArticles] = useState<ArticleType[]>([]);
 
   // --- Fetch all saved articles from DB ---
   const getArticles = async () => {
+    if (!isSignedIn) {
+      return;
+    }
     try {
       setLoading(true);
       const { data } = await axios.get("/api/articleSummarizer");
@@ -38,7 +43,7 @@ const HomeSideBar = ({ open }: Props) => {
 
   useEffect(() => {
     getArticles();
-  }, []);
+  }, [isSignedIn]);
 
   // --- Navigate to article history page ---
   const goToArticle = (id: number) => {
