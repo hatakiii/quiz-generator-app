@@ -31,6 +31,12 @@ const QuickTest = () => {
   const params = useParams();
   const articleId = params.id;
 
+  // ✅ Calculate results
+  const correctCount = quiz.reduce((count, q, i) => {
+    if (selectedAnswers[i] === Number(q.answer)) count++;
+    return count;
+  }, 0);
+
   if (!quiz || quiz.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
@@ -73,12 +79,6 @@ const QuickTest = () => {
     resetFields();
     router.push("/");
   };
-
-  // ✅ Calculate results
-  const correctCount = quiz.reduce((count, q, i) => {
-    if (selectedAnswers[i] === Number(q.answer)) count++;
-    return count;
-  }, 0);
 
   // ✅ Show results summary
   if (showResults) {
