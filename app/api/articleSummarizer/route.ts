@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -32,6 +33,22 @@ export const POST = async (req: NextRequest) => {
     );
   }
 
+  // --- 🔑 ADD USER AUTHENTICATION AND ID RETRIEVAL ---
+  const user = await currentUser();
+  const clerkId = user?.id;
+
+  if (!clerkId) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
+  const internalUser = await prisma.users.findUnique({
+    where: { clerkid: clerkId },
+  });
+
+  if (!internalUser) {
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+  } // --------------------------------------------------
+
   const transformedContentPrompt = replaceApostrophes(contentPrompt);
 
   const response = await ai.models.generateContent({
@@ -54,6 +71,7 @@ export const POST = async (req: NextRequest) => {
         title: titlePrompt,
         content: transformedContentPrompt,
         summary: text,
+        userid: internalUser.id,
       },
     });
 
@@ -65,8 +83,35 @@ export const POST = async (req: NextRequest) => {
 };
 
 export const GET = async () => {
-  // const articles = await query("SELECT * FROM articles");
-  const articles = await prisma.articles.findMany();
+  // --- 🔑 GET USER AUTHENTICATION AND ID RETRIEVAL ---
+  const user = await currentUser();
+  const clerkId = user?.id;
 
+  if (!clerkId) {
+    // Return an empty array or a 401/404 if not logged in
+    return Response.json(
+      { message: "Not authenticated", articles: [] },
+      { status: 401 }
+    );
+  }
+
+  const internalUser = await prisma.users.findUnique({
+    where: { clerkid: clerkId },
+  });
+
+  if (!internalUser) {
+    return Response.json(
+      { message: "User not found", articles: [] },
+      { status: 404 }
+    );
+  } // -------------------------------------------------- // ---  FILTER ARTICLES BY USER ID ---
+  const articles = await prisma.articles.findMany({
+    where: {
+      userid: internalUser.id,
+    },
+    orderBy: {
+      createdat: "desc", // Optional: Order by most recent
+    },
+  }); // --------------------------------------
   return Response.json({ message: "success", articles });
 };

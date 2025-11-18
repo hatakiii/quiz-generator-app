@@ -12,11 +12,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArticleType } from "@/lib/types";
-import { BookOpen, ChevronLeft, FileText, Sparkles } from "lucide-react";
+import {
+  BookOpen,
+  ChevronLeft,
+  FileText,
+  Loader2,
+  Sparkles,
+} from "lucide-react";
 import { LuSparkles } from "react-icons/lu";
 import axios from "axios";
 import Link from "next/link";
 import { useData } from "@/app/_providers/EverythingProvider";
+
+const LoadingSpinner = () => (
+  <div className="flex justify-center items-center h-full min-h-40">
+    <Loader2 className="w-8 h-8 animate-spin text-primary" />
+  </div>
+);
 
 const SummaryHistory = () => {
   const router = useRouter();
@@ -47,9 +59,9 @@ const SummaryHistory = () => {
 
   if (loading || !article) {
     return (
-      <p className="text-center mt-10 text-muted-foreground">
-        Loading article...
-      </p>
+      <div className="mt-10 flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
     );
   }
   console.log("articleid", article.id);

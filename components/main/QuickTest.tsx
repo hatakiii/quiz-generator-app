@@ -119,8 +119,8 @@ const QuickTest = () => {
                   <Image
                     src={`${
                       selectedAnswers[i] === Number(q.answer)
-                        ? "check-circle.svg"
-                        : "x-circle.svg"
+                        ? "/check-circle.svg"
+                        : "/x-circle.svg"
                     }`}
                     alt=""
                     width={24}
