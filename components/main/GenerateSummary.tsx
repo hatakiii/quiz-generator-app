@@ -28,7 +28,7 @@ const GenerateSummary = () => {
   } = useData();
 
   return (
-    <div className="w-full mt-12">
+    <div className="min-w-214 mt-12 px-0">
       <Card>
         <CardHeader>
           <div className="flex gap-2 items-center">
