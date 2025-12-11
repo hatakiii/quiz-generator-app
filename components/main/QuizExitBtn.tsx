@@ -12,12 +12,14 @@ import {
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
+import { useData } from "@/app/_providers/EverythingProvider";
 const QuizExitBtn = () => {
   const router = useRouter();
+  const { resetFields } = useData();
 
   const onExitQuiz = () => {
-    // localStorage.removeItem("asnwer");
-    router.push("summarized");
+    resetFields();
+    router.push("/");
   };
   return (
     <div>

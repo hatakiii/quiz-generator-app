@@ -31,7 +31,6 @@ const QuickTest = () => {
   const params = useParams();
   const articleId = params.id;
 
-  // ✅ Calculate results
   const correctCount = quiz.reduce((count, q, i) => {
     if (selectedAnswers[i] === Number(q.answer)) count++;
     return count;
@@ -45,13 +44,11 @@ const QuickTest = () => {
     );
   }
 
-  // ✅ Handle user selecting an option
   const handleAnswerSelect = (index: number) => {
     const newAnswers = [...selectedAnswers];
     newAnswers[currentQuestionIndex] = index;
     setSelectedAnswers(newAnswers);
 
-    // Auto move to next question after 1s delay
     setTimeout(() => {
       if (currentQuestionIndex < totalQuestions - 1) {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -80,7 +77,6 @@ const QuickTest = () => {
     router.push("/");
   };
 
-  // ✅ Show results summary
   if (showResults) {
     return (
       <div className="flex flex-col gap-6">
@@ -97,7 +93,7 @@ const QuickTest = () => {
 
         <Card className="p-7 w-107 min-h-132">
           <CardContent className="flex flex-col gap-4 justify-start items-start px-0">
-            <div className="text-2xl  text-primary font-semibold leading-8 flex justify-self-start">
+            <div className="text-2xl  text-primary font-semibold leading-8 flex gap-2 items-center">
               Your score{" "}
               <span className="font-bold">
                 {"   "}
@@ -162,7 +158,6 @@ const QuickTest = () => {
     );
   }
 
-  // ✅ Regular quiz question UI
   return (
     <div className="w-full flex flex-col gap-6">
       <div>
@@ -182,9 +177,11 @@ const QuickTest = () => {
 
       <Card className="p-7">
         <CardContent className="flex flex-col gap-5 p-0">
-          <div className="flex justify-between">
-            <h3 className="text-xl font-medium">{currentQuestion.question}</h3>
-            <p className="text-sm text-muted-foreground">
+          <div className="flex justify-between gap-12 items-center">
+            <h3 className="w-78 h-full text-xl/7 text-black font-medium">
+              {currentQuestion.question}
+            </h3>
+            <p className="w-10 h-full text-sm text-muted-foreground">
               {currentQuestionIndex + 1} / {totalQuestions}
             </p>
           </div>
